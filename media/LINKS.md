@@ -8,7 +8,7 @@
 
 > Episódio áudio gerado automaticamente sobre o NEAR Protocol GPT.
 
-🔗 [Aceder ao Podcast](#) ← *substituir pelo link do Google Drive*
+🔗 [Aceder ao Podcast](https://drive.google.com/file/d/1FbRZ4PDalqUvLazmWZf-9ao3y3_9NplL/view?usp=sharing)
 
 ---
 
@@ -16,7 +16,7 @@
 
 > Vídeo explicativo gerado automaticamente sobre o projeto.
 
-🔗 [Aceder ao Vídeo](#) ← *substituir pelo link do Google Drive*
+🔗 [Aceder ao Vídeo](https://drive.google.com/file/d/1c00-2-ZwLip0-B9TWF3rpfL4__uHN7oy/view?usp=sharing)
 
 ---
 
@@ -24,8 +24,8 @@
 
 > Apresentação de slides gerada automaticamente.
 
-🔗 [Aceder aos Slides (versão PDF)](#) ← *substituir pelo link do Google Drive*  
-🔗 [Aceder aos Slides (versão PPTX)](#) ← *substituir pelo link do Google Drive*
+🔗 [Aceder aos Slides (versão PDF)](https://drive.google.com/file/d/1ERIrwBi4jfeN_EufNa84zyN3AGEliTP8/view?usp=sharing)
+🔗 [Aceder aos Slides (versão PPTX)](https://docs.google.com/presentation/d/1A4LPELv-8EJPhbdDabmHuYsP97ox5aHO/edit?usp=sharing&ouid=116030375214030442068&rtpof=true&sd=true)
 
 ---
 
@@ -33,7 +33,7 @@
 
 > Infografia visual gerada automaticamente sobre o ecossistema NEAR.
 
-🔗 [Aceder à Infografia](#) ← *substituir pelo link do Google Drive*
+🔗 [Aceder à Infografia](https://drive.google.com/file/d/1zppfI7pApprubjVJ5Bchr7Q-4H_ZFXo5/view?usp=sharing)
 
 ---
 
