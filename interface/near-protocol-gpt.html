@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NEAR Protocol GPT — FinTech</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:        #0d1117;
+    --bg-mid:    #131920;
+    --bg-card:   #161f28;
+    --border:    rgba(0,236,151,0.10);
+    --border-md: rgba(0,236,151,0.18);
+    --green:     #00ec97;
+    --green-dim: rgba(0,236,151,0.12);
+    --green-glow:rgba(0,236,151,0.06);
+    --text:      #e2eaf0;
+    --muted:     #5a7080;
+    --muted-md:  #8a9db0;
+    --white:     #ffffff;
+    --red:       #ff5f5f;
+    --amber:     #f59e0b;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed;
+    left:0; top:0; bottom:0;
+    width: 288px;
+    background: var(--bg-mid);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 28px 22px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .near-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .near-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--green-dim);
+    border: 1px solid var(--border-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .near-icon svg { width: 22px; height: 22px; }
+
+  .near-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+  }
+
+  .near-subtitle {
+    font-size: 10px;
+    color: var(--green);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-desc {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* ── AGENTS ── */
+  .agents-section {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .agent-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 9px;
+    margin-bottom: 5px;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .agent-pill:hover { background: var(--green-glow); border-color: var(--border); }
+
+  .agent-pill.active {
+    background: var(--green-dim);
+    border-color: var(--border-md);
+  }
+
+  .agent-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .agent-pill-name {
+    font-size: 12.5px;
+    color: var(--muted-md);
+    font-weight: 500;
+    transition: color 0.18s;
+  }
+
+  .agent-pill.active .agent-pill-name { color: var(--green); }
+
+  .agent-tag {
+    margin-left: auto;
+    font-size: 9px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .agent-pill.active .agent-tag {
+    color: var(--green);
+    border-color: var(--border-md);
+    background: var(--green-dim);
+  }
+
+  /* ── CUSTOMIZE / SKILLS ── */
+  .customize-section {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .customize-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .customize-toggle .arrow {
+    font-size: 10px;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+
+  .customize-toggle.open .arrow { transform: rotate(180deg); }
+
+  .skills-grid {
+    display: none;
+    margin-top: 10px;
+    gap: 5px;
+    flex-direction: column;
+  }
+
+  .skills-grid.open { display: flex; }
+
+  .skill-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .skill-row:hover { background: var(--green-glow); }
+
+  .skill-row.active-skill {
+    background: var(--green-dim);
+    border-color: var(--border);
+  }
+
+  .skill-check {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    border: 1.5px solid var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .skill-row.active-skill .skill-check {
+    border-color: var(--green);
+    background: var(--green);
+  }
+
+  .skill-check svg { display: none; width: 9px; height: 9px; }
+  .skill-row.active-skill .skill-check svg { display: block; }
+
+  .skill-row-name {
+    font-size: 11.5px;
+    color: var(--muted-md);
+    font-weight: 400;
+  }
+
+  .skill-row.active-skill .skill-row-name { color: var(--text); }
+
+  .skill-num {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    color: var(--muted);
+  }
+
+  /* ── API KEY ── */
+  .api-section {
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .api-wrap { position: relative; }
+
+  .api-input {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 34px 9px 11px;
+    font-size: 11.5px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .api-input::placeholder { color: var(--muted); }
+  .api-input:focus { border-color: var(--green); }
+
+  .api-dot {
+    position: absolute;
+    right: 11px; top: 50%;
+    transform: translateY(-50%);
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.3s;
+  }
+
+  .api-dot.ok  { background: var(--green); }
+  .api-dot.err { background: var(--red); }
+
+  /* ── QUICK PROMPTS ── */
+  .quick-section {
+    padding: 14px 22px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .quick-section::-webkit-scrollbar { width: 3px; }
+  .quick-section::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .quick-item {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 7px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 3px;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    line-height: 1.45;
+  }
+
+  .quick-item:hover {
+    background: var(--green-glow);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .sidebar-footer {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .clear-btn {
+    width: 100%;
+    padding: 9px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 11.5px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .clear-btn:hover {
+    border-color: var(--border-md);
+    color: var(--text);
+    background: var(--green-glow);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 288px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .topbar {
+    padding: 16px 36px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .topbar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .active-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--green-dim);
+    border: 1px solid var(--border-md);
+    border-radius: 20px;
+    font-size: 10.5px;
+    color: var(--green);
+    font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .active-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+
+  .skill-badges {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .skill-badge {
+    font-size: 9.5px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: rgba(0,236,151,0.03);
+  }
+
+  /* ── CHAT ── */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .chat-area::-webkit-scrollbar { width: 4px; }
+  .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Welcome */
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+    padding: 50px 40px;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .welcome-icon {
+    width: 80px; height: 80px;
+    border-radius: 20px;
+    background: var(--green-dim);
+    border: 1px solid var(--border-md);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .welcome-icon::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 28px;
+    border: 1px solid var(--border);
+  }
+
+  .welcome-icon svg { width: 40px; height: 40px; }
+
+  .welcome h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .welcome h1 em {
+    color: var(--green);
+    font-style: normal;
+  }
+
+  .welcome p {
+    font-size: 14px;
+    color: var(--muted-md);
+    max-width: 460px;
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  .welcome-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 560px;
+  }
+
+  .chip {
+    padding: 8px 15px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12.5px;
+    color: var(--muted-md);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .chip:hover {
+    background: var(--green-dim);
+    color: var(--green);
+    border-color: var(--border-md);
+    transform: translateY(-1px);
+  }
+
+  /* Messages */
+  .message {
+    display: flex;
+    gap: 12px;
+    animation: fadeUp 0.25s ease forwards;
+  }
+
+  .message.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .message.user .msg-avatar {
+    background: rgba(255,255,255,0.07);
+    color: var(--muted-md);
+    border: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .message.bot .msg-avatar {
+    background: var(--green-dim);
+    border: 1px solid var(--border-md);
+  }
+
+  .msg-bubble {
+    max-width: 72%;
+    padding: 13px 17px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .message.user .msg-bubble {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-top-right-radius: 3px;
+  }
+
+  .message.bot .msg-bubble {
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-top-left-radius: 3px;
+  }
+
+  .msg-agent-tag {
+    font-size: 9.5px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--green);
+    margin-bottom: 7px;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
+
+  .msg-bubble p { margin-bottom: 8px; }
+  .msg-bubble p:last-child { margin-bottom: 0; }
+  .msg-bubble strong { color: var(--white); font-weight: 600; }
+  .msg-bubble em { color: var(--muted-md); font-style: italic; }
+  .msg-bubble code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,236,151,0.07);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--green);
+  }
+  .msg-bubble ul { padding-left: 18px; margin: 6px 0; }
+  .msg-bubble li { margin-bottom: 4px; }
+  .msg-bubble h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    color: var(--white);
+    margin: 10px 0 5px;
+  }
+
+  /* Typing */
+  .typing {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    animation: fadeUp 0.25s ease forwards;
+  }
+
+  .typing-avatar {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: var(--green-dim);
+    border: 1px solid var(--border-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .typing-bubble {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    border-top-left-radius: 3px;
+    padding: 13px 17px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: bounce 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%,60%,100% { transform:translateY(0); opacity:0.4; }
+    30% { transform:translateY(-5px); opacity:1; }
+  }
+
+  /* ── INPUT ── */
+  .input-area {
+    padding: 16px 36px 22px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+
+  .input-wrap:focus-within { border-color: var(--border-md); }
+
+  textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.55;
+    max-height: 140px;
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  .send-btn {
+    width: 34px; height: 34px;
+    background: var(--green-dim);
+    border: 1px solid var(--border-md);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .send-btn:hover { background: rgba(0,236,151,0.2); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .send-btn svg { width: 15px; height: 15px; fill: var(--green); }
+
+  .input-hint {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-md);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    z-index: 100;
+    animation: fadeUp 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="near-logo">
+      <div class="near-icon">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M72 18L52 50L72 82" stroke="#00ec97" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28 18L48 50L28 82" stroke="#00ec97" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="28" y1="18" x2="72" y2="82" stroke="#00ec97" stroke-width="9" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="near-title">NEAR Protocol GPT</div>
+        <div class="near-subtitle">FinTech · ISCAC · 2025/26</div>
+      </div>
+    </div>
+    <div class="sidebar-desc">Sistema de agentes especializados na blockchain NEAR Protocol para a UC de FinTech.</div>
+  </div>
+
+  <!-- AGENTS -->
+  <div class="agents-section">
+    <div class="section-label">Agentes</div>
+
+    <div class="agent-pill active" data-agent="protocol" onclick="setAgent('protocol')">
+      <div class="agent-dot" style="background:#00ec97"></div>
+      <span class="agent-pill-name">NEAR Protocol</span>
+      <span class="agent-tag">técnico</span>
+    </div>
+
+    <div class="agent-pill" data-agent="fintech" onclick="setAgent('fintech')">
+      <div class="agent-dot" style="background:#38bdf8"></div>
+      <span class="agent-pill-name">NEAR FinTech</span>
+      <span class="agent-tag">aplicado</span>
+    </div>
+
+    <div class="agent-pill" data-agent="critic" onclick="setAgent('critic')">
+      <div class="agent-dot" style="background:#ff5f5f"></div>
+      <span class="agent-pill-name">Avaliador Crítico</span>
+      <span class="agent-tag">avaliação</span>
+    </div>
+  </div>
+
+  <!-- CUSTOMIZE -->
+  <div class="customize-section">
+    <div class="customize-toggle" id="customizeToggle" onclick="toggleCustomize()">
+      <div class="section-label" style="margin:0">Personalizar Skills</div>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="skills-grid" id="skillsGrid">
+      <div class="skill-row" data-skill="s1" onclick="toggleSkill('s1')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Tokenomics & Mercado</span>
+        <span class="skill-num">s1</span>
+      </div>
+      <div class="skill-row" data-skill="s2" onclick="toggleSkill('s2')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Arquitectura Técnica</span>
+        <span class="skill-num">s2</span>
+      </div>
+      <div class="skill-row" data-skill="s3" onclick="toggleSkill('s3')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Governança & Regulação</span>
+        <span class="skill-num">s3</span>
+      </div>
+      <div class="skill-row" data-skill="s4" onclick="toggleSkill('s4')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Ecossistema FinTech</span>
+        <span class="skill-num">s4</span>
+      </div>
+      <div class="skill-row" data-skill="s5" onclick="toggleSkill('s5')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Comparação de Blockchains</span>
+        <span class="skill-num">s5</span>
+      </div>
+      <div class="skill-row" data-skill="s6" onclick="toggleSkill('s6')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Smart Contracts</span>
+        <span class="skill-num">s6</span>
+      </div>
+      <div class="skill-row" data-skill="s7" onclick="toggleSkill('s7')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Casos de Estudo</span>
+        <span class="skill-num">s7</span>
+      </div>
+      <div class="skill-row" data-skill="s8" onclick="toggleSkill('s8')">
+        <div class="skill-check"><svg viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="skill-row-name">Web3 & Futuro</span>
+        <span class="skill-num">s8</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- API KEY -->
+  <div class="api-section">
+    <div class="section-label">API Key Anthropic</div>
+    <div class="api-wrap">
+      <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-..." oninput="validateKey()"/>
+      <div class="api-dot" id="apiDot"></div>
+    </div>
+  </div>
+
+  <!-- QUICK PROMPTS -->
+  <div class="quick-section">
+    <div class="section-label">Prompts Rápidos</div>
+    <div class="quick-item" onclick="sendQuick('O que é o sharding Nightshade e como resolve o trilemma da blockchain?')">⚙️ Sharding Nightshade</div>
+    <div class="quick-item" onclick="sendQuick('Explica o mecanismo de tokenomics do NEAR: inflação, fee burning e epoch rewards.')">💰 Tokenomics NEAR</div>
+    <div class="quick-item" onclick="sendQuick('Como funciona a Aurora EVM e qual a sua relevância para o ecossistema NEAR?')">🌉 Aurora EVM</div>
+    <div class="quick-item" onclick="sendQuick('Compara a NEAR Protocol com Ethereum e Solana em termos de escalabilidade e custos.')">🔀 NEAR vs Ethereum vs Solana</div>
+    <div class="quick-item" onclick="sendQuick('Como se aplica o regulamento MiCA ao ecossistema NEAR e aos seus tokens?')">⚖️ MiCA e NEAR</div>
+    <div class="quick-item" onclick="sendQuick('Quais são os projetos DeFi mais relevantes construídos na NEAR?')">🏦 DeFi na NEAR</div>
+    <div class="quick-item" onclick="sendQuick('Como funciona o mecanismo de validadores ocultos (Hidden Validators) na NEAR?')">🔐 Hidden Validators</div>
+    <div class="quick-item" onclick="sendQuick('Qual é o papel do Rainbow Bridge na interoperabilidade cross-chain?')">🌈 Rainbow Bridge</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="clear-btn" onclick="clearChat()">↺ &nbsp;Limpar conversa</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">NEAR Protocol GPT</div>
+      <div class="active-badge">
+        <div class="active-badge-dot"></div>
+        <span id="activeBadgeText">near-protocol-agent</span>
+      </div>
+    </div>
+    <div class="skill-badges" id="skillBadges"></div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M72 18L52 50L72 82" stroke="#00ec97" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28 18L48 50L28 82" stroke="#00ec97" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="28" y1="18" x2="72" y2="82" stroke="#00ec97" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>NEAR Protocol <em>GPT</em></h1>
+      <p>Sistema de agentes especializados na blockchain NEAR Protocol. Seleciona um agente na barra lateral e começa a explorar.</p>
+      <div class="welcome-chips">
+        <div class="chip" onclick="sendQuick('O que é o NEAR Protocol e porque é relevante em FinTech?')">🔗 O que é a NEAR?</div>
+        <div class="chip" onclick="sendQuick('Explica o mecanismo de sharding Nightshade.')">⚙️ Nightshade</div>
+        <div class="chip" onclick="sendQuick('Como funciona o tokenomics do NEAR?')">💰 Tokenomics</div>
+        <div class="chip" onclick="sendQuick('Quais são os principais projetos do ecossistema NEAR?')">🌐 Ecossistema</div>
+        <div class="chip" onclick="sendQuick('Como se compara a NEAR com o Ethereum?')">🔀 Comparações</div>
+        <div class="chip" onclick="sendQuick('Qual o impacto do MiCA na NEAR e nos seus tokens?')">⚖️ Regulação</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea id="userInput" placeholder="Coloca a tua questão sobre NEAR Protocol..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="input-hint">Introduz a tua API key Anthropic · Enter para enviar · Shift+Enter para nova linha</div>
+  </div>
+</main>
+
+<script>
+// ── SYSTEM PROMPTS ──────────────────────────────────────
+const AGENT_PROMPTS = {
+  protocol: `És um agente especialista na blockchain NEAR Protocol, desenvolvido para a unidade curricular de FinTech do ISCAC (2024/2025). Forneces explicações técnicas, económicas e estratégicas sobre a NEAR Protocol com rigor académico e terminologia apropriada a Blockchain, Web3 e Criptoeconomia.
+
+Idioma: Português europeu (PT-PT) com terminologia técnica em inglês quando não existe tradução estabelecida (ex: chunk, epoch, staking, slashing).
+
+Fontes primárias: NEAR White Paper (NEAR Foundation), Nightshade Paper — Skidanov & Polosukhin (2019), Tama & Wicaksana (2023) IEEE IMCOM.
+
+COMPORTAMENTO:
+1. Definir conceitos antes de os aplicar.
+2. Estruturar respostas com títulos claros.
+3. Comparar com outras blockchains quando pertinente: Ethereum (processamento sequencial, EIP-1559, Casper FFG), Solana (vertical scaling), Polkadot (relay chain + parachains).
+4. Citar fontes primárias quando aplicável.
+5. Nunca fornecer aconselhamento financeiro directo nem recomendações de investimento.
+6. Ressalvar desactualização quando dados de mercado ou métricas possam ter evoluído.
+
+DOMÍNIOS:
+- Arquitectura: Layer 1, Nightshade Sharding, Doomslug, WASM Runtime, validadores ocultos, Fishermen, cross-shard receipts
+- Tokenomics: utilidade do token NEAR, Thresholded PoS, epoch rewards, inflação máx. 5%, fee burning, contract rewards (30% developers), armazenamento
+- Governança: progressive slashing (double signing 3× stake, invalid chunks stake total), NEAR Foundation, Reference Maintainer, VRF
+- Ecossistema: Aurora EVM, Rainbow Bridge, DeFi, NFTs, identidade digital (nome.near), RWA
+- Desempenho (Tama & Wicaksana 2023): ~0,17 TPS on-chain, solução híbrida ~1,77 TPS
+
+Estrutura recomendada para questões complexas: (1) Definição, (2) Funcionamento interno, (3) Implicações/trade-offs, (4) Comparação, (5) Fonte de referência.`,
+
+  fintech: `És um agente especialista em FinTech aplicada à blockchain NEAR Protocol, desenvolvido para a UC de FinTech do ISCAC (2024/2025). O teu foco é a aplicação prática e o impacto no sector financeiro — complementas o near-protocol-agent que cobre a arquitectura técnica.
+
+Idioma: Português europeu (PT-PT).
+
+DOMÍNIOS:
+1. Ecossistema FinTech: Aurora EVM, Rainbow Bridge, DeFi (DEXs, lending, stablecoins, yield farming, liquid staking), NFTs (NEP-171), identidade digital (nome.near, DID, SSI), tokenização de activos reais (RWA: imóveis, dívida, commodities, créditos de carbono), pagamentos on-chain, NEAR BOS.
+2. Regulação: MiCA (Regulamento UE 2023/1114), SEC/CFTC/Howey Test, Portugal (Banco de Portugal, CMVM, Lei 83/2017), classificação jurídica de tokens (EMT, ART), KYC/AML, Travel Rule (GAFI), smart contracts legais, governança on-chain vs off-chain.
+3. Casos de Estudo: Aurora, Ref Finance, Meta Pool, Sweat Economy, NEAR Social — TVL, métricas de adopção, modelos de negócio, sustentabilidade DeFi.
+4. Smart Contracts (perspectiva aplicada): Rust/AssemblyScript, NEP-141/171/145, cross-contract calls, segurança, NEAR CLI.
+5. Comparação estratégica: trilemma blockchain, NEAR vs Ethereum/Solana/Polkadot/Avalanche/Cosmos, matriz de decisão.
+6. Web3 e Futuro: Web1→Web2→Web3, NEAR AI, chain abstraction, CBDCs, impacto institucional.
+
+COMPORTAMENTO: Rigor académico, estruturar em secções, privilegiar exemplos concretos, apresentar perspectivas múltiplas em temas controversos, quantificar com métricas reais (TVL, TPS, custos, Nakamoto coefficient) indicando período de referência. NUNCA aconselhamento financeiro ou previsões especulativas de preço.`,
+
+  critic: `És um mentor académico especializado na avaliação construtiva do projeto NEAR Protocol GPT — um sistema de agentes de IA sobre blockchain NEAR, desenvolvido na UC de FinTech do ISCAC (2024/2025).
+
+Avalias: relatório final, agentes (near-protocol-agent e near-fintech-agent) e skills (s1 a s8).
+
+ESTRUTURA OBRIGATÓRIA de cada avaliação:
+
+✅ Pontos Fortes
+Apresenta entre 4 a 6 aspetos bem conseguidos, com justificação específica para cada um. Cada ponto deve ser distinto e fundamentado — não genérico.
+
+⚠️ Aspetos a Melhorar (Críticos)
+Apresenta exatamente 2 pontos críticos — os mais relevantes. Cada ponto deve indicar o componente concreto afetado e incluir uma sugestão de correção direta.
+
+💡 Sugestões de Refinamento
+1 a 3 melhorias opcionais que elevariam a qualidade sem serem essenciais.
+
+REGRAS: Começa sempre pelos pontos fortes. Sê específico — nunca genérico. Tom respeitoso e encorajador. Comunica em PT-PT. Não forneces notas numéricas absolutas.`
+};
+
+const SKILL_PROMPTS = {
+  s1: `\n\nSKILL ACTIVA — s1 Tokenomics & Mercado: Para questões de tokenomics, economia e análise de mercado do NEAR, aplicar conhecimento especializado sobre: staking, inflação máx. 5%, fee burning, epoch rewards, supply total 1B NEAR, contract rewards (30% devolvidos a developers), modelo de armazenamento (1 NEAR por 100KB), correlação BTC/ETH, ciclos de mercado Web3/DeFi, métricas on-chain. Separar sempre análise académica de aconselhamento financeiro.`,
+  s2: `\n\nSKILL ACTIVA — s2 Arquitectura Técnica: Para questões de arquitectura, aplicar conhecimento especializado sobre: Nightshade sharding (chunk producers, block producers, shard state), Doomslug (single-round BFT, endorsement + skip), WASM runtime, validadores ocultos (Hidden Validators via VRF), Fishermen (nós de verificação assíncrona), fraud proofs, cross-shard transactions por receipts assíncronos, resharding dinâmico. Rigor técnico com base no NEAR White Paper e Nightshade Paper.`,
+  s3: `\n\nSKILL ACTIVA — s3 Governança & Regulação: Para questões regulatórias e de governança, aplicar conhecimento especializado sobre: progressive slashing (double signing: 3× stake do agressor; invalid chunks: stake total), Reference Maintainer, NEAR Foundation (ecosystem fund $800M), MiCA (Regulamento UE 2023/1114, classificação EMT/ART/outros), SEC/CFTC Howey Test, Banco de Portugal, CMVM, Lei 83/2017, KYC/AML em DeFi, Travel Rule GAFI, enquadramento legal de smart contracts, privacidade on-chain.`,
+  s4: `\n\nSKILL ACTIVA — s4 Ecossistema FinTech: Para questões de ecossistema, aplicar conhecimento especializado sobre: Aurora EVM (compatibilidade Solidity, ~$200M TVL histórico), Rainbow Bridge (NEAR↔Ethereum, 4h para ETH→NEAR, trustless), Ref Finance (principal DEX NEAR), Meta Pool (liquid staking stNEAR), Sweat Economy (modelo Move-to-Earn), NEAR Social (rede social descentralizada), identidade digital (nome.near, DID/SSI), tokenização RWA, NEAR BOS como frontend descentralizado.`,
+  s5: `\n\nSKILL ACTIVA — s5 Comparação de Blockchains: Para questões comparativas, aplicar análise sistemática: trilemma blockchain (segurança vs escalabilidade vs descentralização), NEAR (~100k TPS teórico com sharding completo, ~$0,001/tx) vs Ethereum (~15 TPS L1, ~$5-50/tx pré-EIP4844) vs Solana (~65k TPS, histórico de outages) vs Polkadot (relay chain + parachains, ~1000 TPS) vs Avalanche (subnets, ~4500 TPS). Matriz de decisão para selecção de plataforma em FinTech.`,
+  s6: `\n\nSKILL ACTIVA — s6 Smart Contracts: Para questões de desenvolvimento, aplicar conhecimento especializado sobre: Rust e AssemblyScript para NEAR, NEAR SDK (near-sdk-rs, near-sdk-as), padrões NEP-141 (Fungible Token), NEP-171 (NFT), NEP-145 (Storage Management), cross-contract calls com Promises assíncronas, segurança (re-entrância, overflow, controlo de acesso), NEAR CLI (near deploy, near call, near view), near-workspaces para testes de integração, padrões de upgradeability e migração de estado.`,
+  s7: `\n\nSKILL ACTIVA — s7 Casos de Estudo: Para questões sobre projectos reais, aplicar análise crítica detalhada: Aurora (EVM layer, ~$200M TVL pico), Rainbow Bridge (bridge trustless, delays e custos), Ref Finance (AMM, liquidity pools, farm), Meta Pool (liquid staking, stNEAR↔NEAR), Sweat Economy (token SWEAT, Move-to-Earn, 100M+ utilizadores app Sweatcoin), NEAR Social (redes sociais descentralizadas, BOS components), Few and Far (NFT marketplace), Paras (NFT platform). Incluir métricas de adopção, TVL histórico, modelos de negócio e lições aprendidas.`,
+  s8: `\n\nSKILL ACTIVA — s8 Web3 & Futuro: Para questões sobre Web3 e tendências futuras, aplicar visão macro sobre: evolução Web1→Web2→Web3 e posicionamento da NEAR, NEAR BOS (Blockchain Operating System) como sistema operativo descentralizado para frontends, identidade auto-soberana (SSI/DID) e impacto em KYC/AML, NEAR AI (integração de LLMs com smart contracts, agentes autónomos on-chain), chain abstraction (account abstraction, meta-transactions), interoperabilidade universal, CBDCs (modelos CBDC de retalho vs grossista, BIS Innovation Hub), integração institucional (BlackRock BUIDL, JPMorgan Onyx), críticas ao Web3 (descentralização aparente, sustentabilidade de modelos tokenómicos, consumo energético).`
+};
+
+const AGENT_NAMES = {
+  protocol: 'near-protocol-agent',
+  fintech:  'near-fintech-agent',
+  critic:   'near-critic-agent'
+};
+
+const AGENT_COLORS = {
+  protocol: '#00ec97',
+  fintech:  '#38bdf8',
+  critic:   '#ff5f5f'
+};
+
+let currentAgent  = 'protocol';
+let activeSkills  = new Set();
+let messages      = [];
+let isLoading     = false;
+let customizeOpen = false;
+
+// ── Agent selector ──────────────────────────────────────
+function setAgent(agent) {
+  currentAgent = agent;
+  document.querySelectorAll('.agent-pill').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[data-agent="${agent}"]`).classList.add('active');
+  document.getElementById('activeBadgeText').textContent = AGENT_NAMES[agent];
+  updateSkillBadges();
+}
+
+// ── Customize toggle ────────────────────────────────────
+function toggleCustomize() {
+  customizeOpen = !customizeOpen;
+  const grid    = document.getElementById('skillsGrid');
+  const toggle  = document.getElementById('customizeToggle');
+  grid.classList.toggle('open', customizeOpen);
+  toggle.classList.toggle('open', customizeOpen);
+}
+
+// ── Skill toggle ────────────────────────────────────────
+function toggleSkill(skill) {
+  const row = document.querySelector(`[data-skill="${skill}"]`);
+  if (activeSkills.has(skill)) {
+    activeSkills.delete(skill);
+    row.classList.remove('active-skill');
+  } else {
+    activeSkills.add(skill);
+    row.classList.add('active-skill');
+  }
+  updateSkillBadges();
+}
+
+function updateSkillBadges() {
+  const container = document.getElementById('skillBadges');
+  container.innerHTML = '';
+  activeSkills.forEach(s => {
+    const badge = document.createElement('div');
+    badge.className = 'skill-badge';
+    badge.textContent = s;
+    container.appendChild(badge);
+  });
+}
+
+// ── Build system prompt ─────────────────────────────────
+function buildSystemPrompt() {
+  let prompt = AGENT_PROMPTS[currentAgent];
+  activeSkills.forEach(s => {
+    if (SKILL_PROMPTS[s]) prompt += SKILL_PROMPTS[s];
+  });
+  return prompt;
+}
+
+// ── API key ─────────────────────────────────────────────
+function validateKey() {
+  const key  = document.getElementById('apiKey').value.trim();
+  const dot  = document.getElementById('apiDot');
+  if (key.startsWith('sk-ant-') && key.length > 20) dot.className = 'api-dot ok';
+  else if (key.length > 0) dot.className = 'api-dot err';
+  else dot.className = 'api-dot';
+}
+
+function getKey() { return document.getElementById('apiKey').value.trim(); }
+
+// ── Input ───────────────────────────────────────────────
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function sendQuick(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+
+// ── Send ────────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text  = input.value.trim();
+  if (!text || isLoading) return;
+
+  const key = getKey();
+  if (!key || !key.startsWith('sk-ant-')) {
+    showToast('⚠️ Introduz uma API key Anthropic válida (sk-ant-...)');
+    return;
+  }
+
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  addMessage('user', text);
+  messages.push({ role: 'user', content: text });
+  input.value = '';
+  input.style.height = 'auto';
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  const typingEl = showTyping();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: buildSystemPrompt(),
+        messages: messages
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `Erro ${res.status}`);
+
+    const reply = data.content?.[0]?.text || '';
+    messages.push({ role: 'assistant', content: reply });
+    typingEl.remove();
+    addMessage('bot', reply);
+
+  } catch (err) {
+    typingEl.remove();
+    showToast('❌ ' + (err.message || 'Erro na API'));
+  } finally {
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+  }
+}
+
+// ── Render ──────────────────────────────────────────────
+function addMessage(role, text) {
+  const area = document.getElementById('chatArea');
+  const div  = document.createElement('div');
+  div.className = `message ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+
+  if (role === 'user') {
+    avatar.textContent = 'TU';
+  } else {
+    avatar.innerHTML = `<svg viewBox="0 0 100 100" fill="none" width="18" height="18"><path d="M72 18L52 50L72 82" stroke="${AGENT_COLORS[currentAgent]}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 18L48 50L28 82" stroke="${AGENT_COLORS[currentAgent]}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><line x1="28" y1="18" x2="72" y2="82" stroke="${AGENT_COLORS[currentAgent]}" stroke-width="10" stroke-linecap="round"/></svg>`;
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  if (role === 'bot') {
+    const tag = document.createElement('div');
+    tag.className = 'msg-agent-tag';
+    tag.style.color = AGENT_COLORS[currentAgent];
+    tag.textContent = AGENT_NAMES[currentAgent] + (activeSkills.size ? ' + ' + [...activeSkills].join(', ') : '');
+    bubble.appendChild(tag);
+  }
+
+  const content = document.createElement('div');
+  content.innerHTML = renderMarkdown(text);
+  bubble.appendChild(content);
+
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/^[-•] (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br/>')
+    .replace(/^([^<].+)$/, '<p>$1</p>');
+}
+
+function showTyping() {
+  const area = document.getElementById('chatArea');
+  const div  = document.createElement('div');
+  div.className = 'typing';
+  div.innerHTML = `
+    <div class="typing-avatar">
+      <svg viewBox="0 0 100 100" fill="none" width="18" height="18">
+        <path d="M72 18L52 50L72 82" stroke="${AGENT_COLORS[currentAgent]}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M28 18L48 50L28 82" stroke="${AGENT_COLORS[currentAgent]}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="28" y1="18" x2="72" y2="82" stroke="${AGENT_COLORS[currentAgent]}" stroke-width="10" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="typing-bubble">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>`;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+// ── Utils ────────────────────────────────────────────────
+function clearChat() {
+  messages = [];
+  const area = document.getElementById('chatArea');
+  area.innerHTML = `
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">
+        <svg viewBox="0 0 100 100" fill="none" width="40" height="40">
+          <path d="M72 18L52 50L72 82" stroke="#00ec97" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28 18L48 50L28 82" stroke="#00ec97" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="28" y1="18" x2="72" y2="82" stroke="#00ec97" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>NEAR Protocol <em>GPT</em></h1>
+      <p>Sistema de agentes especializados na blockchain NEAR Protocol. Seleciona um agente na barra lateral e começa a explorar.</p>
+      <div class="welcome-chips">
+        <div class="chip" onclick="sendQuick('O que é o NEAR Protocol e porque é relevante em FinTech?')">🔗 O que é a NEAR?</div>
+        <div class="chip" onclick="sendQuick('Explica o mecanismo de sharding Nightshade.')">⚙️ Nightshade</div>
+        <div class="chip" onclick="sendQuick('Como funciona o tokenomics do NEAR?')">💰 Tokenomics</div>
+        <div class="chip" onclick="sendQuick('Quais são os principais projetos do ecossistema NEAR?')">🌐 Ecossistema</div>
+        <div class="chip" onclick="sendQuick('Como se compara a NEAR com o Ethereum?')">🔀 Comparações</div>
+        <div class="chip" onclick="sendQuick('Qual o impacto do MiCA na NEAR e nos seus tokens?')">⚖️ Regulação</div>
+      </div>
+    </div>`;
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+</script>
+</body>
+</html>
